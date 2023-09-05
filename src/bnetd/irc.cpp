@@ -967,7 +967,7 @@ namespace pvpgn
 		}
 
 		int irc_send_rpl_namreply_internal(t_connection * c, t_channel const * channel){
-			char temp[MAX_IRC_MESSAGE_LEN];
+			char temp[MAX_IRC_MESSAGE_LEN - 2];
 			char const * ircname;
 			int first = 1;
 			t_connection * m;
@@ -984,7 +984,7 @@ namespace pvpgn
 				return -1;
 			}
 			/* '@' = secret; '*' = private; '=' = public */
-			if ((1 + 1 + std::strlen(ircname) + 2 + 1) <= MAX_IRC_MESSAGE_LEN) {
+			if ((1 + 1 + std::strlen(ircname) + 2 + 1) <= MAX_IRC_MESSAGE_LEN - 2) {
 				std::sprintf(temp, "%c %s :", ((channel_get_permanent(channel)) ? ('=') : ('*')), ircname);
 			}
 			else {
@@ -1065,7 +1065,7 @@ namespace pvpgn
 
 		extern int irc_send_rpl_namreply(t_connection * c, t_channel const * channel)
 		{
-			char temp[MAX_IRC_MESSAGE_LEN];
+			char temp[MAX_IRC_MESSAGE_LEN - 2];
 			char const * ircname;
 
 			if (!c) {
