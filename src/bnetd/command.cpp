@@ -2515,17 +2515,20 @@ namespace pvpgn
 				message_send_text(c, message_type_error, c, localize(c, "That user is not in this channel."));
 				return -1;
 			}
-			if (account_get_auth_admin(conn_get_account(kuc), NULL) == 1 ||
-				account_get_auth_admin(conn_get_account(kuc), channel_get_name(channel)) == 1)
+			if (!conn_get_game(c))
 			{
-				message_send_text(c, message_type_error, c, localize(c, "You cannot kick administrators."));
-				return -1;
-			}
-			else if (account_get_auth_operator(conn_get_account(kuc), NULL) == 1 ||
-				account_get_auth_operator(conn_get_account(kuc), channel_get_name(channel)) == 1)
-			{
-				message_send_text(c, message_type_error, c, localize(c, "You cannot kick operators."));
-				return -1;
+				if (account_get_auth_admin(conn_get_account(kuc), NULL) == 1 ||
+					account_get_auth_admin(conn_get_account(kuc), channel_get_name(channel)) == 1)
+				{
+					message_send_text(c, message_type_error, c, localize(c, "You cannot kick administrators."));
+					return -1;
+				}
+				else if (account_get_auth_operator(conn_get_account(kuc), NULL) == 1 ||
+					account_get_auth_operator(conn_get_account(kuc), channel_get_name(channel)) == 1)
+				{
+					message_send_text(c, message_type_error, c, localize(c, "You cannot kick operators."));
+					return -1;
+				}
 			}
 
 			{
