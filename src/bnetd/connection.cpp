@@ -102,6 +102,7 @@ namespace pvpgn
 
 		static void conn_send_welcome(t_connection * c);
 		static void conn_send_issue(t_connection * c);
+		static void conn_handle_gamehost_leave(t_connection * c);
 
 		static int connarray_create(void);
 		static void connarray_destroy(void);
@@ -171,6 +172,26 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "could not open issue file \"{}\" for reading (std::fopen: {})", filename, std::strerror(errno));
 			else
 				eventlog(eventlog_level_debug, __FUNCTION__, "no issue file");
+		}
+
+		void conn_handle_gamehost_leave(t_connection *c)
+		{
+			// if this user is host in an open game channel, remove everyone else from the channel and destroy the game
+			if (c->protocol.chat.channel && c->protocol.game && game_get_owner(c->protocol.game) == c &&
+				game_get_status(c->protocol.game) != game_status_started)
+			{
+				eventlog(eventlog_level_info, __FUNCTION__, "host left game channel, remove other players");
+				t_connection *other;
+				for (other = channel_get_first(c->protocol.chat.channel); other; other = channel_get_next())
+				{
+					if (other != c)
+					{
+						channel_del_connection(other->protocol.chat.channel, other, message_type_part, NULL);
+						other->protocol.chat.channel = NULL;
+						conn_set_game(other, NULL, NULL, NULL, game_type_none, 0);
+					}
+				}
+			}
 		}
 
 		// [zap-zero] 20020629
@@ -596,6 +617,8 @@ namespace pvpgn
 			/* if this user in a channel, notify everyone that the user has left */
 			if (c->protocol.chat.channel)
 				channel_del_connection(c->protocol.chat.channel, c, message_type_quit, NULL);
+
+			conn_handle_gamehost_leave(c);
 
 			if ((c->protocol.game) && (c->protocol.account))
 			{
@@ -2067,6 +2090,7 @@ namespace pvpgn
 			}
 
 			channel_del_connection(c->protocol.chat.channel, c, message_type_part, NULL);
+			conn_handle_gamehost_leave(c);
 			c->protocol.chat.channel = NULL;
 
 			return 0;
@@ -2089,6 +2113,10 @@ namespace pvpgn
 			channel_del_connection(c->protocol.chat.channel, c, message_type_kick, text);
 			c->protocol.chat.channel = NULL;
 
+			t_game *game;
+			if ((game = conn_get_game(c)) && (game_get_status(game) == game_status_open))
+				conn_set_game(c, NULL, NULL, NULL, game_type_none, 0);
+
 			return 0;
 		}
 
@@ -2108,6 +2136,10 @@ namespace pvpgn
 
 			channel_del_connection(c->protocol.chat.channel, c, message_type_quit, text);
 			c->protocol.chat.channel = NULL;
+
+			t_game *game;
+			if ((game = conn_get_game(c)) && (game_get_status(game) == game_status_open))
+				conn_set_game(c, NULL, NULL, NULL, game_type_none, 0);
 
 			return 0;
 		}
