@@ -274,6 +274,10 @@ shutdown_decr = 60
 # false.
 new_accounts = true
 
+# Set this to false to disable automatic account creation on WOL login
+# and require an account to be explicitly registered
+auto_create_account = true
+
 # Set this to the maximum number of accounts you want to allow to be
 # created on your server. A value of 0 means infinite and is the default.
 #max_accounts = 0

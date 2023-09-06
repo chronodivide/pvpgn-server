@@ -65,6 +65,7 @@ namespace pvpgn
 		extern unsigned int prefs_get_shutdown_decr(void);
 		extern unsigned int prefs_get_allow_new_accounts(void);
 		extern unsigned int prefs_get_max_accounts(void);
+		extern unsigned int prefs_get_auto_create_account(void);
 		extern unsigned int prefs_get_kick_old_login(void);
 		extern char const * prefs_get_channelfile(void);
 		extern unsigned int prefs_get_ask_new_channel(void);

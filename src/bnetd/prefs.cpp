@@ -73,6 +73,7 @@ namespace pvpgn
 			unsigned int shutdown_decr;
 			unsigned int new_accounts;
 			unsigned int max_accounts;
+			unsigned int auto_create_account;
 			unsigned int kick_old_login;
 			unsigned int ask_new_channel;
 			unsigned int hide_pass_games;
@@ -313,6 +314,10 @@ namespace pvpgn
 		static int conf_set_max_accounts(const char *valstr);
 		static const char *conf_get_max_accounts(void);
 		static int conf_setdef_max_accounts(void);
+
+		static int conf_set_auto_create_account(const char *valstr);
+		static const char *conf_get_auto_create_account(void);
+		static int conf_setdef_auto_create_account(void);
 
 		static int conf_set_kick_old_login(const char *valstr);
 		static const char *conf_get_kick_old_login(void);
@@ -771,6 +776,7 @@ namespace pvpgn
 			{ "shutdown_decr", conf_set_shutdown_decr, conf_get_shutdown_decr, conf_setdef_shutdown_decr },
 			{ "new_accounts", conf_set_new_accounts, conf_get_new_accounts, conf_setdef_new_accounts },
 			{ "max_accounts", conf_set_max_accounts, conf_get_max_accounts, conf_setdef_max_accounts },
+			{ "auto_create_account", conf_set_auto_create_account, conf_get_auto_create_account, conf_setdef_auto_create_account },
 			{ "kick_old_login", conf_set_kick_old_login, conf_get_kick_old_login, conf_setdef_kick_old_login },
 			{ "ask_new_channel", conf_set_ask_new_channel, conf_get_ask_new_channel, conf_setdef_ask_new_channel },
 			{ "hide_pass_games", conf_set_hide_pass_games, conf_get_hide_pass_games, conf_setdef_hide_pass_games },
@@ -1545,6 +1551,26 @@ namespace pvpgn
 		static const char* conf_get_max_accounts(void)
 		{
 			return conf_get_int(prefs_runtime_config.max_accounts);
+		}
+
+		extern unsigned int prefs_get_auto_create_account(void)
+		{
+			return prefs_runtime_config.auto_create_account;
+		}
+
+		static int conf_set_auto_create_account(const char *valstr)
+		{
+			return conf_set_bool(&prefs_runtime_config.auto_create_account, valstr, 0);
+		}
+
+		static int conf_setdef_auto_create_account(void)
+		{
+			return conf_set_bool(&prefs_runtime_config.auto_create_account, NULL, 1);
+		}
+
+		static const char* conf_get_auto_create_account(void)
+		{
+			return conf_get_bool(prefs_runtime_config.auto_create_account);
 		}
 
 

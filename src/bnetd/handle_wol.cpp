@@ -335,7 +335,7 @@ namespace pvpgn
 				a = accountlist_find_account(user);
 				if (!a) {
 					/* Auto-create account */
-					if (prefs_get_allow_new_accounts() == 0)
+					if (prefs_get_allow_new_accounts() == 0 || prefs_get_auto_create_account() == 0)
 					{
 						irc_send(conn, RPL_BAD_LOGIN, ":Bad nickname or password");
 						return 0;
