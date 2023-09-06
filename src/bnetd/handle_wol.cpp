@@ -977,6 +977,16 @@ namespace pvpgn
 						return 0;
 					}
 
+					if ((channel_get_max(channel) != -1) && (channel_get_curr(channel) >= channel_get_max(channel)))
+					{
+						irc_send(conn, ERR_CHANNELISFULL, std::string(std::string(e[0]) + " :Channel is full.").c_str());
+
+						if (e)
+							irc_unget_listelems(e);
+							
+						return 0;
+					}
+
 					if (channel_check_banning(channel, conn))
 					{
 						irc_send(conn, ERR_BANNEDFROMCHAN, std::string(std::string(e[0]) + " :You are banned from that channel.").c_str());
