@@ -317,7 +317,8 @@ namespace pvpgn
 				nick = "UserName";
 
 			std::string data(":matchbot!u@h " + std::string(command) + " " + std::string(nick) + " " + std::string(text));
-			data.erase(MAX_IRC_MESSAGE_LEN, std::string::npos);
+			if (data.length() > MAX_IRC_MESSAGE_LEN)
+				data.erase(MAX_IRC_MESSAGE_LEN, std::string::npos);
 
 			DEBUG2("[{}] sent \"{}\"", conn_get_socket(conn), data.c_str());
 			data.append("\r\n");
