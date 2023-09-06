@@ -534,6 +534,9 @@ namespace pvpgn
 				}
 			}
 
+			if (prefs_get_allow_new_accounts() == 0)
+				return NULL;
+
 			return account_load_new(username, 0);
 		}
 
@@ -553,6 +556,10 @@ namespace pvpgn
 					}
 				}
 			}
+
+			if (prefs_get_allow_new_accounts() == 0)
+				return NULL;
+				
 			return account_load_new(NULL, uid);
 		}
 

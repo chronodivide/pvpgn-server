@@ -335,6 +335,12 @@ namespace pvpgn
 				a = accountlist_find_account(user);
 				if (!a) {
 					/* Auto-create account */
+					if (prefs_get_allow_new_accounts() == 0)
+					{
+						irc_send(conn, RPL_BAD_LOGIN, ":Bad nickname or password");
+						return 0;
+					}
+
 					t_account * tempacct;
 					t_hash pass_hash;
 					char * pass = xstrdup(conn_wol_get_apgar(conn)); /* FIXME: Do not use bnet passhash when we have wol passhash */
