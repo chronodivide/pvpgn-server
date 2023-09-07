@@ -230,12 +230,29 @@ namespace pvpgn
 				return 0;
 
 			assert(attrgroup->storage);
-			unsigned int uid = *((unsigned int *)attrgroup->storage);
 			t_storage_info *defacct = storage->get_defacct();
-			unsigned int defuid = *((unsigned int *)defacct);
+
+			bool is_default_acct;
+			if (storage->info_type == storage_info_type_string)
+			{
+				char* fid = (char*)attrgroup->storage;
+				char* deffid = (char*)defacct;
+				is_default_acct = strcmp(fid, deffid) == 0;
+			}
+			else if (storage->info_type == storage_info_type_integer)
+			{
+				unsigned int uid = *((unsigned int *)attrgroup->storage);
+				unsigned int defuid = *((unsigned int *)defacct);
+				is_default_acct = uid == defuid;
+			}
+			else
+			{
+				eventlog(eventlog_level_error, __FUNCTION__, "unknown storage info_type. skipping.");
+				return -1;
+			}
 
 			// do not flush default account
-			if (uid == defuid)
+			if (is_default_acct)
 			{
 				storage->free_info(defacct);
 				return 2;

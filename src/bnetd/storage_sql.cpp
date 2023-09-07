@@ -55,6 +55,7 @@ namespace pvpgn
 		static const char *sql_escape_key(const char *);
 
 		t_storage storage_sql = {
+			storage_info_type_integer,
 			sql_init,
 			sql_close,
 			sql_read_maxuserid,

@@ -32,6 +32,7 @@ namespace pvpgn
 	namespace bnetd
 	{
 
+		enum t_storage_info_type { storage_info_type_integer, storage_info_type_string };
 		typedef const void t_storage_info;
 		typedef int(*t_read_attr_func)(const char *, const char *, void *);
 		typedef int(*t_read_accounts_func)(t_storage_info *, void*);
@@ -39,6 +40,7 @@ namespace pvpgn
 		typedef int(*t_load_teams_func)(void*);
 
 		typedef struct {
+			t_storage_info_type info_type;
 			int(*init)(const char *);
 			int(*close)(void);
 			unsigned(*read_maxuserid)(void);
