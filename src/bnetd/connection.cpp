@@ -182,14 +182,21 @@ namespace pvpgn
 			{
 				eventlog(eventlog_level_info, __FUNCTION__, "host left game channel, remove other players");
 				t_connection *other;
-				for (other = channel_get_first(c->protocol.chat.channel); other; other = channel_get_next())
+				while (other = channel_get_first_no_advance(c->protocol.chat.channel))
 				{
-					if (other != c)
+					if (other == c)
 					{
-						channel_del_connection(other->protocol.chat.channel, other, message_type_part, NULL);
-						other->protocol.chat.channel = NULL;
-						conn_set_game(other, NULL, NULL, NULL, game_type_none, 0);
+						eventlog(eventlog_level_error, __FUNCTION__, "called before host connection removed, aborting");
+						return;
 					}
+					eventlog(eventlog_level_debug, __FUNCTION__, "removing connection {} from channel", conn_get_socket(other));
+					if (channel_del_connection(other->protocol.chat.channel, other, message_type_part, NULL) != 0)
+					{
+						eventlog(eventlog_level_error, __FUNCTION__, "couldn't remove connection from channel, aborting");
+						return;
+					}
+					other->protocol.chat.channel = NULL;
+					conn_set_game(other, NULL, NULL, NULL, game_type_none, 0);
 				}
 			}
 		}

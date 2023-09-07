@@ -161,6 +161,7 @@ namespace pvpgn
 		extern int channel_get_curr(t_channel const * channel);
 		extern int channel_conn_is_tmpOP(t_channel const * channel, t_connection * c);
 		extern int channel_conn_has_tmpVOICE(t_channel const * channel, t_connection * c);
+		extern t_connection * channel_get_first_no_advance(t_channel const * channel);
 		extern t_connection * channel_get_first(t_channel const * channel);
 		extern t_connection * channel_get_next(void);
 
