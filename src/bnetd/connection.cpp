@@ -713,6 +713,8 @@ namespace pvpgn
 				else
 				{
 					xfree(c->protocol.chat.ignore_list);
+					c->protocol.chat.ignore_list = NULL;
+					c->protocol.chat.ignore_count = 0;
 				}
 			}
 
