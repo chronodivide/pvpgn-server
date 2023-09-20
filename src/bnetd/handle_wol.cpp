@@ -1069,8 +1069,15 @@ namespace pvpgn
 								if (clan)
 									clanid = clan_get_clanid(clan);
 
-								std::sprintf(_temp, "%u %u %u 1 %u %u %u :%s", channel_get_min(channel), game_get_maxplayers(game), channel_wol_get_game_type(channel),
-									clanid, conn_get_addr(conn), ((game_get_type(game) == game_type_ladder) ? 1 : 0), irc_convert_channel(channel, conn));
+								if (conn_get_clienttag(conn) == CLIENTTAG_CDRAL2_UINT) {
+									// Replaces IP with ping
+									std::sprintf(_temp, "%u %u %u 1 %u %u %u :%s", channel_get_min(channel), game_get_maxplayers(game), channel_wol_get_game_type(channel),
+										clanid, conn_get_latency(conn), ((game_get_type(game) == game_type_ladder) ? 1 : 0), irc_convert_channel(channel, conn));
+								}
+								else {
+									std::sprintf(_temp, "%u %u %u 1 %u %u %u :%s", channel_get_min(channel), game_get_maxplayers(game), channel_wol_get_game_type(channel),
+										clanid, conn_get_addr(conn), ((game_get_type(game) == game_type_ladder) ? 1 : 0), irc_convert_channel(channel, conn));
+								}
 							}
 
 							channel_set_userflags(conn);
@@ -1108,7 +1115,14 @@ namespace pvpgn
 
 					if (clan)
 						clanid = clan_get_clanid(clan);
-					std::snprintf(_temp, sizeof(_temp), "%s %s %s %s %u %u %s :%s", params[1], params[2], params[3], params[4], clanid, conn_get_addr(conn), params[6], params[0]);
+
+					if (conn_get_clienttag(conn) == CLIENTTAG_CDRAL2_UINT) {
+						// Replaces IP with ping
+						std::snprintf(_temp, sizeof(_temp), "%s %s %s %s %u %u %s :%s", params[1], params[2], params[3], params[4], clanid, conn_get_latency(conn), params[6], params[0]);
+					}
+					else {
+						std::snprintf(_temp, sizeof(_temp), "%s %s %s %s %u %u %s :%s", params[1], params[2], params[3], params[4], clanid, conn_get_addr(conn), params[6], params[0]);
+					}
 				}
 				eventlog(eventlog_level_debug, __FUNCTION__, "[** WOL **] JOINGAME [Game Options] ({})", _temp);
 
