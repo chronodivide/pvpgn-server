@@ -492,6 +492,51 @@ namespace pvpgn
 														  ERROR1("undefined channel type for {} channel", channelname);
 					}
 						return 0;
+
+					case CLIENTTAG_CDRAL2_UINT: {
+						random = rand();
+
+						if (std::strcmp(channelname, CDRAL2_CHANNEL_RANKED_1V1) == 0
+							|| std::strcmp(channelname, CDRAL2_CHANNEL_UNRANKED_1V1) == 0) {
+							int pl1_colour = anongame_wol_player_get_colour(player1);
+							int pl1_country = anongame_wol_player_get_country(player1);
+							int pl2_colour = anongame_wol_player_get_colour(player2);
+							int pl2_country = anongame_wol_player_get_country(player2);
+
+							if (std::strcmp(channelname, CDRAL2_CHANNEL_RANKED_1V1) == 0) {
+								DEBUG0("Generating ranked 1v1 game for Chrono Divide RA2");
+							}
+							else {
+								DEBUG0("Generating unranked 1v1 game for Chrono Divide RA2");
+							}
+
+							_get_pair(&pl1_colour, &pl2_colour, 7, true);
+							_get_pair(&pl1_country, &pl2_country, 9, false);
+							mapname = anongame_get_map_from_prefs(ANONGAME_TYPE_1V1, ctag);
+
+							/* We have madatory of game */
+							std::snprintf(_temp, sizeof(_temp), ":Start %d,0,0,10000,0,1,1,1,1,0,1,0,x,2,1,163770,%s,1:", random, mapname);
+							std::strcat(temp, _temp);
+
+							/* GameHost informations */
+							std::snprintf(_temp, sizeof(_temp), "%s,%d,%d,-2,-2,", conn_get_chatname(conn_pl1), pl1_country, pl1_colour);
+							std::strcat(temp, _temp);
+							std::snprintf(_temp, sizeof(_temp), "%x,1,%x,", anongame_wol_player_get_address(player1), anongame_wol_player_get_port(player1));
+							std::strcat(temp, _temp);
+
+							/* GameJoinie informations */
+							std::snprintf(_temp, sizeof(_temp), "%s,%d,%d,-2,-2,", conn_get_chatname(conn_pl2), pl2_country, pl2_colour);
+							std::strcat(temp, _temp);
+							std::snprintf(_temp, sizeof(_temp), "%x,1,%x", anongame_wol_player_get_address(player2), anongame_wol_player_get_port(player2));
+							std::strcat(temp, _temp);
+
+							_send_msg(conn_pl1, "PRIVMSG", temp);
+							_send_msg(conn_pl2, "PRIVMSG", temp);
+						}
+						else
+							ERROR1("undefined channel type for {} channel", channelname);
+					}
+						return 0;
 					default:
 						DEBUG0("unsupported client for WOL Matchgame");
 						return 0;

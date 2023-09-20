@@ -43,14 +43,17 @@ namespace pvpgn
 		static char *	maplist_w3xp[MAXMAPS];
 		static char *	maplist_ral2[MAXMAPS];
 		static char *	maplist_yuri[MAXMAPS];
+		static char *	maplist_cdr2[MAXMAPS];
 		static int	number_maps_war3 = 0;
 		static int	number_maps_w3xp = 0;
 		static int	number_maps_ral2 = 0;
 		static int	number_maps_yuri = 0;
+		static int	number_maps_cdr2 = 0;
 		static char	maplists_war3[ANONGAME_TYPES][MAXMAPS_PER_QUEUE + 1];
 		static char	maplists_w3xp[ANONGAME_TYPES][MAXMAPS_PER_QUEUE + 1];
 		static char	maplists_ral2[ANONGAME_TYPES][MAXMAPS_PER_QUEUE + 1];
 		static char	maplists_yuri[ANONGAME_TYPES][MAXMAPS_PER_QUEUE + 1];
+		static char	maplists_cdr2[ANONGAME_TYPES][MAXMAPS_PER_QUEUE + 1];
 
 
 		static int	_maplists_type_get_queue(const char * type);
@@ -186,6 +189,28 @@ namespace pvpgn
 				}
 			}
 
+			else if (clienttag == CLIENTTAG_CDRAL2_UINT) {
+				for (j = 0; j < number_maps_cdr2; j++) {
+					if (std::strcmp(maplist_cdr2[j], mapname) == 0) { /* already in list */
+						in_list = 1;
+						break;
+					}
+				}
+
+				if (!in_list)
+					maplist_cdr2[number_maps_cdr2++] = xstrdup(mapname);
+
+				if (maplists_cdr2[queue][0] < MAXMAPS_PER_QUEUE) {
+					maplists_cdr2[queue][0]++;
+					maplists_cdr2[queue][(int)maplists_cdr2[queue][0]] = j;
+				}
+				else {
+					eventlog(eventlog_level_error, __FUNCTION__,
+						"cannot add map \"{}\" for gametype: {} (maxmaps per qametype: {})",
+						mapname, _maplists_queue_get_type(queue), MAXMAPS_PER_QUEUE);
+				}
+			}
+
 			else eventlog(eventlog_level_error, __FUNCTION__, "invalid clienttag: {}", tag_uint_to_str(clienttag_str, clienttag));
 		}
 
@@ -284,6 +309,8 @@ namespace pvpgn
 				return number_maps_ral2;
 			case CLIENTTAG_YURISREV_UINT:
 				return number_maps_yuri;
+			case CLIENTTAG_CDRAL2_UINT:
+				return number_maps_cdr2;
 			default:
 				ERROR0("Unknown clienttag");
 				return 0;
@@ -316,6 +343,8 @@ namespace pvpgn
 				return maplists_ral2[queue][0];
 			case CLIENTTAG_YURISREV_UINT:
 				return maplists_yuri[queue][0];
+			case CLIENTTAG_CDRAL2_UINT:
+				return maplists_cdr2[queue][0];
 			default:
 				ERROR0("Unknown clienttag");
 				return 0;
@@ -349,6 +378,8 @@ namespace pvpgn
 				return maplist_ral2[(int)maplists_ral2[queue][mapnumber]];
 			case CLIENTTAG_YURISREV_UINT:
 				return maplist_yuri[(int)maplists_yuri[queue][mapnumber]];
+			case CLIENTTAG_CDRAL2_UINT:
+				return maplist_cdr2[(int)maplists_cdr2[queue][mapnumber]];
 			default:
 				ERROR0("Unknown clienttag");
 				return NULL;

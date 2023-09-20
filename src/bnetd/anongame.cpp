@@ -2050,6 +2050,9 @@ namespace pvpgn
 			case CLIENTTAG_YURISREV_UINT:
 				default_map = "xgrinder.map";
 				break;
+			case CLIENTTAG_CDRAL2_UINT:
+				default_map = "mp02t2.map";
+				break;
 			default:
 				ERROR1("invalid clienttag: {}", tag_uint_to_str(clienttag_str, clienttag));
 				return "eb2.map";

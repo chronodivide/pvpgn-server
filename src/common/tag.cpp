@@ -105,6 +105,8 @@ namespace pvpgn
 			return CLIENTTAG_EMPERORBD;
 		case CLIENTTAG_LOFLORE3_UINT:
 			return CLIENTTAG_LOFLORE3;
+		case CLIENTTAG_CDRAL2_UINT:
+			return CLIENTTAG_CDRAL2;
 		case CLIENTTAG_WWOL_UINT:
 			return CLIENTTAG_WWOL;
 		default:
@@ -239,6 +241,7 @@ namespace pvpgn
 		case CLIENTTAG_YURISREV_UINT:
 		case CLIENTTAG_EMPERORBD_UINT:
 		case CLIENTTAG_LOFLORE3_UINT:
+		case CLIENTTAG_CDRAL2_UINT:
 		case CLIENTTAG_WWOL_UINT:
 			return 1;
 		default:
@@ -271,6 +274,7 @@ namespace pvpgn
 		case CLIENTTAG_YURISREV_UINT:
 		case CLIENTTAG_EMPERORBD_UINT:
 		case CLIENTTAG_LOFLORE3_UINT:
+		case CLIENTTAG_CDRAL2_UINT:
 		case CLIENTTAG_WWOL_UINT:
 			return 1;
 		default:
@@ -334,6 +338,8 @@ namespace pvpgn
 			return "Emepror: Battle for Dune";
 		case CLIENTTAG_LOFLORE3_UINT:
 			return "Lands of Lore 3";
+		case CLIENTTAG_CDRAL2_UINT:
+			return "Chrono Divide: Red Alert 2";
 		case CLIENTTAG_WWOL_UINT:
 			return "Westwood Online";
 		default:
@@ -487,6 +493,8 @@ namespace pvpgn
 			return CLIENTTAG_YURISREV_UINT;
 		case 12288:  /* C&C Renegade Free Dedicated Server */
 			return CLIENTTAG_RENGDFDS_UINT;
+		case 16640:  /* Chrono Divide: Red Alert 2 */
+			return CLIENTTAG_CDRAL2_UINT;
 		case 32512:  /* Westwood Online API */
 			return CLIENTTAG_WWOL_UINT;
 		default:  /* Unknown Westwood Online game -> is anyone SKU that we havent??? */
@@ -535,6 +543,10 @@ namespace pvpgn
 			return CLIENTTAG_WWOL_UINT;
 		case 41:  /* Yuri's Revenge channels */
 			return CLIENTTAG_YURISREV_UINT;
+		case 45:  /* Chrono Divide channels */
+		case 50:
+		case 51:
+			return CLIENTTAG_CDRAL2_UINT;
 		default:
 			return CLIENTTAG_WWOL_UINT;
 		}

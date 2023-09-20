@@ -144,6 +144,8 @@ typedef enum {
 #define CLIENTTAG_LOFLORE3_UINT     0x4C4F5233
 #define CLIENTTAG_WWOL              "WWOL" /* Other Westwood Online games */
 #define CLIENTTAG_WWOL_UINT         0x57574F4C
+#define CLIENTTAG_CDRAL2            "CDR2" /* Chrono Divide: Red Alert 2 */
+#define CLIENTTAG_CDRAL2_UINT       0x43445232
 
 /* BNETD-specific software tags - we try to use lowercase to avoid collisions  */
 #define CLIENTTAG_FREECRAFT "free" /* FreeCraft http://www.freecraft.com/ */

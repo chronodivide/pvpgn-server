@@ -1014,7 +1014,9 @@ namespace pvpgn
 						t_game * game = conn_get_game(m);
 						if ((first) && ((std::strcmp(ircname, "#Lob_38_0") == 0) ||
 							(std::strcmp(ircname, "#Lob_39_0") == 0) ||
-							(std::strcmp(ircname, "#Lob_40_0") == 0))) {
+							(std::strcmp(ircname, "#Lob_40_0") == 0) ||
+							(std::strcmp(ircname, "#Lob_50_0") == 0) ||
+							(std::strcmp(ircname, "#Lob_51_0") == 0))) {
 
 							std::sprintf(_temp, "@matchbot,0,0 ");
 							std::strcat(temp, _temp);

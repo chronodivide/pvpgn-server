@@ -1447,6 +1447,10 @@ namespace pvpgn
 			LadderKey YURI_solo(ladder_id_solo, CLIENTTAG_YURISREV_UINT, ladder_sort_default, ladder_time_default);
 			ladderMap.insert(std::make_pair(YURI_solo, LadderList(YURI_solo, referenceTypeAccount)));
 
+			//CDR2 ladders
+			LadderKey CDR2_solo(ladder_id_solo, CLIENTTAG_CDRAL2_UINT, ladder_sort_default, ladder_time_default);
+			ladderMap.insert(std::make_pair(CDR2_solo, LadderList(CDR2_solo, referenceTypeAccount)));
+
 		}
 
 		Ladders::~Ladders() throw ()

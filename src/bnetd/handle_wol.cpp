@@ -1765,7 +1765,8 @@ namespace pvpgn
 				cl_tag = tag_sku_to_uint(std::atoi(params[3]));
 
 				if ((cl_tag != CLIENTTAG_TIBERNSUN_UINT) && (cl_tag != CLIENTTAG_TIBSUNXP_UINT)
-					&& (cl_tag != CLIENTTAG_REDALERT2_UINT) && (cl_tag != CLIENTTAG_YURISREV_UINT)) {
+					&& (cl_tag != CLIENTTAG_REDALERT2_UINT) && (cl_tag != CLIENTTAG_YURISREV_UINT)
+					&& (cl_tag != CLIENTTAG_CDRAL2_UINT)) {
 					// PELISH: We are not supporting ladders for all WOL clients yet
 					std::strcat(data, "\r\n");
 					_ladder_send(conn, data);

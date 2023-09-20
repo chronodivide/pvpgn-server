@@ -39,6 +39,9 @@
 #define YURI_CHANNEL_FFA      "Lob 40 0"
 #define YURI_CHANNEL_COOP     "Lob 39 0"
 
+#define CDRAL2_CHANNEL_RANKED_1V1 "Lob 50 0"
+#define CDRAL2_CHANNEL_UNRANKED_1V1 "Lob 51 0"
+
 #endif
 
 namespace pvpgn
