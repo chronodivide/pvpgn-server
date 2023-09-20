@@ -1044,7 +1044,13 @@ namespace pvpgn
 							if (clan)
 								clanid = clan_get_clanid(clan);
 
-							std::sprintf(_temp, "%s,%u,%u", name, clanid, conn_get_addr(m));
+							if (conn_get_clienttag(c) == CLIENTTAG_CDRAL2_UINT) {
+								// Print ping instead of IP
+								std::sprintf(_temp, "%s,%u,%u", name, clanid, conn_get_latency(m));
+							}
+							else {
+								std::sprintf(_temp, "%s,%u,%u", name, clanid, conn_get_addr(m));
+							}
 							std::strcat(temp, _temp);
 						}
 						else {

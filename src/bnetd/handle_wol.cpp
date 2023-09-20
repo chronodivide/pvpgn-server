@@ -514,6 +514,9 @@ namespace pvpgn
 			/**
 			 *  The layout of the game list entry is something like this:
 			 *  #game_channel_name currentusers maxplayers gameType gameIsTournment gameExtension longIP LOCK::topic
+			 * 
+			 *  XWOL:
+			 *  #game_channel_name currentusers maxplayers gameType gameIsTournment gameExtension hostPing LOCK::topic
 			 */
 
 			std::strcat(temp, gamename);
@@ -534,7 +537,12 @@ namespace pvpgn
 			std::snprintf(temp_a, sizeof(temp_a), "%s ", channel_wol_get_game_extension(gamechannel));  /* game extension */
 			std::strcat(temp, temp_a);
 
-			std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_addr(game_get_owner(game))); /* owner IP - FIXME: address translation here!! */
+			if (game_get_clienttag(game) == CLIENTTAG_CDRAL2_UINT) {
+				std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_latency(game_get_owner(game)));
+			}
+			else {
+				std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_addr(game_get_owner(game))); /* owner IP - FIXME: address translation here!! */
+			}
 			std::strcat(temp, temp_a);
 
 			if (std::strcmp(game_get_pass(game), "") == 0)
