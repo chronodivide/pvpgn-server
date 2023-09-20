@@ -658,7 +658,20 @@ namespace pvpgn
 
 					if (!verytemp)
 						continue; /* something is wrong with the name ... */
-					channel = channellist_find_channel_by_name(verytemp, NULL, NULL);
+
+					t_game * game;
+					if ((game = conn_get_game(conn)) && game_get_status(game) == game_status_open) {
+						channel = game_get_channel(game);
+
+						if (strcmp(channel_get_name(channel), verytemp) != 0) {
+							// Must be in the same channel
+							channel = NULL;
+							continue;
+						}
+					}
+					else {
+						channel = channellist_find_channel_by_name(verytemp, NULL, NULL);
+					}
 					if ((!channel) && (!(channel = conn_get_channel(conn))))
 						continue; /* channel doesn't exist */
 					irc_send_rpl_namreply(conn, channel);
