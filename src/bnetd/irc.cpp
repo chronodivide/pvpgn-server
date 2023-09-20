@@ -682,7 +682,18 @@ namespace pvpgn
 										  if (clan)
 											  clanid = clan_get_clanid(clan);
 
-										  std::sprintf(temp, ":%u,%u", clanid, conn_get_addr(me));
+										  if (conn_get_clienttag(me) == CLIENTTAG_CDRAL2_UINT) {
+											// Replaces IP with ping and adds operator status
+											t_account * acc = conn_get_account(me);
+											const char * ircname = channel_get_name(channel);
+											bool is_operator = (channel_conn_is_tmpOP(channel, me) == 1) ||
+												(account_get_auth_admin(acc, NULL) == 1) || (account_get_auth_admin(acc, ircname) == 1) ||
+												(account_get_auth_operator(acc, NULL) == 1) || (account_get_auth_operator(acc, ircname) == 1);
+											std::sprintf(temp, ":%u,%u,%u", clanid, conn_get_latency(me), is_operator ? 1 : 0);
+										  }
+										  else {
+										  	std::sprintf(temp, ":%u,%u", clanid, conn_get_addr(me));
+										  }
 										  msg = irc_message_preformat(&from, "JOIN", temp, irc_convert_channel(channel, dst));
 									  }
 									  else {
