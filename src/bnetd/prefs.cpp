@@ -181,6 +181,8 @@ namespace pvpgn
 			char const * wol_autoupdate_serverhost;
 			char const * wol_autoupdate_username;
 			char const * wol_autoupdate_password;
+			unsigned int wol_qm_points_thresh;
+			unsigned int wol_qm_expand_thresh;
 		} prefs_runtime_config;
 
 		static int conf_set_filedir(const char *valstr);
@@ -740,6 +742,14 @@ namespace pvpgn
 		static const char *conf_get_wol_autoupdate_password(void);
 		static int conf_setdef_wol_autoupdate_password(void);
 
+		static int conf_set_wol_quickmatch_expand_thresh(const char *valstr);
+		static int conf_setdef_wol_quickmatch_expand_thresh(void);
+		static const char* conf_get_wol_quickmatch_expand_thresh(void);
+
+		static int conf_set_wol_quickmatch_points_thresh(const char *valstr);
+		static int conf_setdef_wol_quickmatch_points_thresh(void);
+		static const char* conf_get_wol_quickmatch_points_thresh(void);
+		
 		/*    directive                 set method                     get method         */
 		static t_conf_entry conf_table[] =
 		{
@@ -883,6 +893,8 @@ namespace pvpgn
 			{ "wol_autoupdate_serverhost", conf_set_wol_autoupdate_serverhost, conf_get_wol_autoupdate_serverhost, conf_setdef_wol_autoupdate_serverhost },
 			{ "wol_autoupdate_username", conf_set_wol_autoupdate_username, conf_get_wol_autoupdate_username, conf_setdef_wol_autoupdate_username },
 			{ "wol_autoupdate_password", conf_set_wol_autoupdate_password, conf_get_wol_autoupdate_password, conf_setdef_wol_autoupdate_password },
+			{ "wol_qm_points_thresh", conf_set_wol_quickmatch_points_thresh, conf_get_wol_quickmatch_points_thresh, conf_setdef_wol_quickmatch_points_thresh },
+			{ "wol_qm_expand_thresh", conf_set_wol_quickmatch_expand_thresh, conf_get_wol_quickmatch_expand_thresh, conf_setdef_wol_quickmatch_expand_thresh },
 
 			{ NULL, NULL, NULL, NONE },
 		};
@@ -3872,6 +3884,45 @@ namespace pvpgn
 			return conf_set_str(&prefs_runtime_config.wol_autoupdate_password, NULL, 0);
 		}
 
+		extern unsigned int prefs_get_wol_quickmatch_points_thresh(void)
+		{
+			return prefs_runtime_config.wol_qm_points_thresh;
+		}
+
+		static int conf_set_wol_quickmatch_points_thresh(const char *valstr)
+		{
+			return conf_set_int(&prefs_runtime_config.wol_qm_points_thresh, valstr, 0);
+		}
+
+		static int conf_setdef_wol_quickmatch_points_thresh(void)
+		{
+			return conf_set_int(&prefs_runtime_config.wol_qm_points_thresh, NULL, BNETD_WOL_QM_POINTS_THRESH);
+		}
+
+		static const char* conf_get_wol_quickmatch_points_thresh(void)
+		{
+			return conf_get_int(prefs_runtime_config.wol_qm_points_thresh);
+		}
+
+		extern unsigned int prefs_get_wol_quickmatch_expand_thresh(void)
+		{
+			return prefs_runtime_config.wol_qm_expand_thresh;
+		}
+
+		static int conf_set_wol_quickmatch_expand_thresh(const char *valstr)
+		{
+			return conf_set_int(&prefs_runtime_config.wol_qm_expand_thresh, valstr, 0);
+		}
+
+		static int conf_setdef_wol_quickmatch_expand_thresh(void)
+		{
+			return conf_set_int(&prefs_runtime_config.wol_qm_expand_thresh, NULL, BNETD_WOL_QM_EXPAND_THRESH);
+		}
+
+		static const char* conf_get_wol_quickmatch_expand_thresh(void)
+		{
+			return conf_get_int(prefs_runtime_config.wol_qm_expand_thresh);
+		}
 	}
 
 }

@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <ctime>
+
 #ifndef INCLUDED_ANONGAME_WOL_TYPES
 #define INCLUDED_ANONGAME_WOL_TYPES
 
@@ -60,6 +62,9 @@ namespace pvpgn
 			int                  port;
 			int                  country;
 			int                  colour;
+            /* Chrono Divide */
+			std::time_t          queue_start_time;
+            bool                 matched;
 		}
 #endif
 		t_anongame_wol_player;

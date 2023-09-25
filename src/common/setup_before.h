@@ -195,6 +195,8 @@ const char * const BNETD_WOLV2_ADDRS = "";
 const int BNETD_WOLV2_PORT = 4005;
 const char * const BNETD_WGAMERES_ADDRS = "";
 const int BNETD_WGAMERES_PORT = 4807;
+const int BNETD_WOL_QM_POINTS_THRESH = 200;
+const int BNETD_WOL_QM_EXPAND_THRESH = 30;
 
 
 /* other default configuration values */

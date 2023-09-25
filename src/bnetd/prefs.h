@@ -200,6 +200,8 @@ namespace pvpgn
 		extern char const * prefs_get_wol_autoupdate_serverhost(void);
 		extern char const * prefs_get_wol_autoupdate_username(void);
 		extern char const * prefs_get_wol_autoupdate_password(void);
+		extern unsigned int prefs_get_wol_quickmatch_points_thresh(void);
+		extern unsigned int prefs_get_wol_quickmatch_expand_thresh(void);
 	}
 
 }

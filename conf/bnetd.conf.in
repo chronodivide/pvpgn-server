@@ -570,6 +570,11 @@ wol_autoupdate_serverhost = "westwood-patch.ea.com"
 wol_autoupdate_username = "update"
 wol_autoupdate_password = "world96"
 
+# Maximum number of points difference allowed to quick match two players
+wol_qm_points_thresh = 200
+# Time in seconds after which the quick match search is expanded, disregarding points difference threshold
+wol_qm_expand_thresh = 30
+
 #                                                                            #
 ##############################################################################
 

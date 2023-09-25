@@ -38,6 +38,11 @@
 #include "connection.h"
 #include "channel.h"
 #include "anongame.h"
+#include "account_wrap.h"
+#include "ladder.h"
+#include "prefs.h"
+#include "server.h"
+#include "timer.h"
 #include "common/setup_after.h"
 
 namespace pvpgn
@@ -59,6 +64,7 @@ namespace pvpgn
 		static int _handle_port_tag(t_anongame_wol_player * player, char * param);
 		static int _handle_country_tag(t_anongame_wol_player * player, char * param);
 		static int _handle_colour_tag(t_anongame_wol_player * player, char * param);
+		static void _anongame_wol_trystart_timer_cb(t_connection * conn, std::time_t now, t_timer_data data);
 
 		static const t_wol_anongame_tag_table_row t_wol_anongame_tag_table[] =
 		{
@@ -98,6 +104,9 @@ namespace pvpgn
 			player->port = 0;
 			player->country = -2; /* Default values are form packet dumps - not prefered country */
 			player->colour = -2; /* Default values are form packet dumps - not prefered colour */
+			/* Used only in Chrono Divide */
+			player->queue_start_time = now;
+			player->matched = false;
 
 			conn_wol_set_anongame_player(conn, player);
 
@@ -348,7 +357,7 @@ namespace pvpgn
 		}
 
 
-		static int anongame_wol_trystart(t_anongame_wol_player const * player1)
+		static int anongame_wol_trystart(t_anongame_wol_player * player1)
 		{
 			t_elem * curr;
 			char temp[MAX_IRC_MESSAGE_LEN];
@@ -387,6 +396,20 @@ namespace pvpgn
 			conn_pl1 = anongame_wol_player_get_conn(player1);
 			ctag = conn_get_clienttag(conn_pl1);
 			channelname = channel_get_name(conn_get_channel(conn_pl1));
+
+			t_ladder_id ladder_id = ladder_id_solo;
+
+			t_account * pl1_acct = conn_get_account(conn_pl1);
+			unsigned pl1_points = 0;
+			if (pl1_acct && account_get_ladder_rank(pl1_acct, ctag, ladder_id)) {
+				pl1_points = account_get_ladder_points(pl1_acct, ctag, ladder_id);
+			}
+
+			unsigned pref_points_diff = prefs_get_wol_quickmatch_points_thresh();
+			time_t pref_queue_expand_time = prefs_get_wol_quickmatch_expand_thresh();
+
+			bool expand_search = now - player1->queue_start_time >= pref_queue_expand_time;
+			bool skipped_matches = false;
 
 			LIST_TRAVERSE(anongame_wol_matchlist(), curr) {
 				player2 = (t_anongame_wol_player *)elem_get_data(curr);
@@ -504,11 +527,25 @@ namespace pvpgn
 							int pl2_country = anongame_wol_player_get_country(player2);
 
 							if (std::strcmp(channelname, CDRAL2_CHANNEL_RANKED_1V1) == 0) {
-								DEBUG0("Generating ranked 1v1 game for Chrono Divide RA2");
+								t_account * pl2_acct = conn_get_account(conn_pl2);
+								unsigned pl2_points = 0;
+								if (pl2_acct && account_get_ladder_rank(pl2_acct, ctag, ladder_id)) {
+									pl2_points = account_get_ladder_points(pl2_acct, ctag, ladder_id);
+								}
+
+								eventlog(eventlog_level_debug, __FUNCTION__, "Checking player pair: {} ({} points) and {} ({} points)", conn_get_username(conn_pl1), pl1_points, conn_get_username(conn_pl2), pl2_points);
+								if (!expand_search && abs(pl1_points - pl2_points) > pref_points_diff) {
+									skipped_matches = true;
+									eventlog(eventlog_level_debug, __FUNCTION__, "Player pair skipped due to points difference threshold ({})", pref_points_diff);
+									continue;
+								}
+								eventlog(eventlog_level_debug, __FUNCTION__, "Generating ranked 1v1 game for Chrono Divide RA2: {} ({} points) vs. {} ({} points)", conn_get_username(conn_pl1), pl1_points, conn_get_username(conn_pl2), pl2_points);
 							}
 							else {
-								DEBUG0("Generating unranked 1v1 game for Chrono Divide RA2");
+								eventlog(eventlog_level_debug, __FUNCTION__, "Generating unranked 1v1 game for Chrono Divide RA2: {} vs. {}", conn_get_username(conn_pl1), conn_get_username(conn_pl2));
 							}
+							player1->matched = true;
+							player2->matched = true;
 
 							_get_pair(&pl1_colour, &pl2_colour, 7, true);
 							_get_pair(&pl1_country, &pl2_country, 9, false);
@@ -544,7 +581,26 @@ namespace pvpgn
 				}
 			}
 
+			if (skipped_matches) {
+				// Found no suitable matches, but we'll expand the search after a preset time
+				DEBUG1("No suitable match found for player {}. Adding a timer to expand search.", conn_get_username(conn_pl1));
+				t_timer_data data;
+				data.p = (void*)player1;
+				if (timerlist_add_timer(conn_pl1, now + pref_queue_expand_time, _anongame_wol_trystart_timer_cb, data) < 0)
+					eventlog(eventlog_level_error, __FUNCTION__, "could not add timer");
+			}
+
 			return 0;
+		}
+
+		static void _anongame_wol_trystart_timer_cb(t_connection * conn, std::time_t now, t_timer_data data)
+		{
+			anongame_wol_player * player1 = (anongame_wol_player*)data.p;
+			// Check if the player hasn't been matched in the meantime
+			if (!player1->matched && conn_get_state(conn) != conn_state_empty) {
+				DEBUG1("Firing timer to expand search for player {}", conn_get_username(conn));
+				anongame_wol_trystart(player1);
+			}
 		}
 
 		static int anongame_wol_tokenize_line(t_connection * conn, char const * text)
