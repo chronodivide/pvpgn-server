@@ -59,6 +59,7 @@ namespace pvpgn
 		} t_wol_anongame_tag_table_row;
 
 		static t_list * anongame_wol_matchlist_head = NULL;
+		static int avgWaitTime = -1;
 
 		static int _handle_address_tag(t_anongame_wol_player * player, char * param);
 		static int _handle_port_tag(t_anongame_wol_player * player, char * param);
@@ -547,6 +548,13 @@ namespace pvpgn
 							player1->matched = true;
 							player2->matched = true;
 
+							if (avgWaitTime == -1) {
+								avgWaitTime = ((now - player1->queue_start_time) + (now - player2->queue_start_time)) / 2;
+							}
+							else {
+								avgWaitTime = (avgWaitTime * 3 + (now - player1->queue_start_time) + (now - player2->queue_start_time)) / 5;
+							}
+
 							_get_pair(&pl1_colour, &pl2_colour, 7, true);
 							_get_pair(&pl1_country, &pl2_country, 9, false);
 							mapname = anongame_get_map_from_prefs(ANONGAME_TYPE_1V1, ctag);
@@ -605,7 +613,6 @@ namespace pvpgn
 
 		static int anongame_wol_tokenize_line(t_connection * conn, char const * text)
 		{
-			t_anongame_wol_player * player;
 			char * command;     /* Match, CINFO, SINFO, Pings */
 			char * tag;         /* ADR, COL, COU... */
 			char * param;       /* value of paramtag */
@@ -623,11 +630,6 @@ namespace pvpgn
 				return -1;
 			}
 
-			if (!(player = anongame_wol_player_create(conn))) {
-				ERROR0("player was not created");
-				return -1;
-			}
-
 			/**
 			 * Here are expected privmsgs:
 			 * :user!EMPR@host PRIVMSG matchbot :Match COU=-1,COL=-1,SHA=-1,SHB=-1,LOC=2,RAT=0
@@ -638,20 +640,29 @@ namespace pvpgn
 			 * :user!RNGD@host PRIVMSG matchbot :CINFO VER=1329937315 CPU=2981 MEM=1023 TPOINTS=0 PLAYED=0 PINGS=00FFFFFFFFFFFFFF
 			 * :user!RNGD@host PRIVMSG matchbot :SINFO 4F453BA3DBAE41CB00000000000000002d# 9Dedicated Renegade Server-C&C_Field.mix07FF0656FFFF1C2D|090000000000
 			 * :user!YURI@host PRIVMSG matchbot :Pings nickname,2;
+			 * 
+			 * :user!CDR2@host PRIVMSG matchbot :Stats
 			 */
 
 			line = (char *)xmalloc(std::strlen(text) + 2);
 			strcpy(line, text);
 
 			command = line;
-			if (!(temp = strchr(command, ' '))) {
-				WARN0("got malformed line (missing command)");
-				xfree(line);
-				return -1;
+			if ((temp = strchr(command, ' '))) {	
+				*temp++ = '\0';
 			}
-			*temp++ = '\0';
 
 			if ((std::strcmp(command, "Match") == 0)) {
+				if (!temp) {
+					WARN0("got malformed line (missing command)");
+					xfree(line);
+					return -1;
+				}
+				t_anongame_wol_player * player;
+				if (!(player = anongame_wol_player_create(conn))) {
+					ERROR0("player was not created");
+					return -1;
+				}
 				strcat(temp, ","); /* FIXME: This is DUMB - without that we lost the last tag/param */
 
 				for (p = temp; *p && (*p != '\0'); p++) {
@@ -670,6 +681,15 @@ namespace pvpgn
 				}
 				_send_msg(conn, "PRIVMSG", ":Working");
 				anongame_wol_trystart(player);
+			}
+			else if (std::strcmp(command, "Stats") == 0) {
+				// TODO: count by client tag and channel
+				int qlen = anongame_wol_matchlist_get_length();
+
+				char temp[MAX_IRC_MESSAGE_LEN];
+				std::memset(temp, 0, sizeof(temp));
+				std::snprintf(temp, sizeof(temp), ":Stats %d,%d", qlen, avgWaitTime);
+				_send_msg(conn, "PRIVMSG", temp);
 			}
 			else {
 				DEBUG1("[** WOL **] got line /{}/", text);
