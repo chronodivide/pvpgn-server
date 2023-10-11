@@ -971,6 +971,7 @@ namespace pvpgn
 		bool
 			LadderList::load()
 		{
+				ladder.clear();
 				return loadBinary();
 			}
 

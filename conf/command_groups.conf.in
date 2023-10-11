@@ -160,6 +160,7 @@
 4	/mute /muteacct /unmute /unmuteacct
 
 5	/ladderactivate
+5   /ladderreload
 
 #	-- Access to group '6' allows users to not only make others Server Admins & Server Operators
 #		but will allow them to make themselves Server Admin & Server Operator.

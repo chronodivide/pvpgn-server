@@ -395,6 +395,7 @@ namespace pvpgn
 		static int _handle_killsession_command(t_connection * c, char const * text);
 		static int _handle_gameinfo_command(t_connection * c, char const * text);
 		static int _handle_ladderactivate_command(t_connection * c, char const * text);
+		static int _handle_ladderreload_command(t_connection * c, char const * text);
 		static int _handle_rehash_command(t_connection * c, char const * text);
 		static int _handle_find_command(t_connection * c, char const *text);
 		static int _handle_save_command(t_connection * c, char const * text);
@@ -502,6 +503,7 @@ namespace pvpgn
 			{ "/killsession", _handle_killsession_command },
 			{ "/gameinfo", _handle_gameinfo_command },
 			{ "/ladderactivate", _handle_ladderactivate_command },
+			{ "/ladderreload", _handle_ladderreload_command },
 			{ "/rehash", _handle_rehash_command },
 			{ "/find", _handle_find_command },
 			{ "/save", _handle_save_command },
@@ -3789,6 +3791,13 @@ namespace pvpgn
 		{
 			ladders.activate();
 			message_send_text(c, message_type_info, c, localize(c, "Copied current scores to active scores on all ladders."));
+			return 0;
+		}
+
+		static int _handle_ladderreload_command(t_connection * c, char const *text)
+		{
+			ladders.load();
+			message_send_text(c, message_type_info, c, "Reloaded all ladders.");
 			return 0;
 		}
 
