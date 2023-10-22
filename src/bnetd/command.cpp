@@ -2559,7 +2559,7 @@ namespace pvpgn
 
 		//Helper-Methods used to allow channel-hosts use /ban /unban (_handle_ban_command, _handle_unban_command)
 		//FIXME: Should be in another place.
-		std::string extractUsername(const std::string& fullString) {
+		std::string extractUsername(const std::string& fullString) { //extract username from "channel_get_name" (yikes!)
     		return fullString.substr(0, fullString.length() - 7);
 		}
 
@@ -2617,6 +2617,11 @@ namespace pvpgn
 					account_get_auth_operator(account, channel_get_name(channel)) == 1)
 				{
 					message_send_text(c, message_type_error, c, localize(c, "You cannot ban operators."));
+					return -1;
+				}
+				else if (chHostName == chHostName) //prevent banning yourself
+				{
+					message_send_text(c, message_type_error, c, localize(c, "You cannot ban yourself."));
 					return -1;
 				}
 			}
