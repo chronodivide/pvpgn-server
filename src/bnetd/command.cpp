@@ -2574,7 +2574,7 @@ namespace pvpgn
 			t_channel *    channel;
 			t_connection * buc;
 			char const * chHostName = conn_get_chatname(c); //Channel-Host
-
+	
 			std::vector<std::string> args = split_command(text, 2);
 
 			if (args[1].empty())
@@ -2597,7 +2597,7 @@ namespace pvpgn
 				account_get_auth_operator(conn_get_account(c), channel_get_name(channel)) && /* default to false */
 				!isUserChannelHost(channel_get_name(channel), chHostName)) //Check if user is Channel-Host
 			{
-				message_send_text(c, message_type_error, c, localize(c, "You have to be at least a Channel Operator to use this command."));
+				message_send_text(c, message_type_error, c, localize(c, "You have to be at least a Channel Operator or Host to use this command."));
 				return -1;
 			}
 			{
@@ -2619,7 +2619,7 @@ namespace pvpgn
 					message_send_text(c, message_type_error, c, localize(c, "You cannot ban operators."));
 					return -1;
 				}
-				else if (chHostName == chHostName) //prevent banning yourself
+				else if (std::strcmp(username, chHostName) == 0) //prevent banning yourself
 				{
 					message_send_text(c, message_type_error, c, localize(c, "You cannot ban yourself."));
 					return -1;
