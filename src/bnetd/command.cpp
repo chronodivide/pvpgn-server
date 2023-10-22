@@ -2639,7 +2639,6 @@ namespace pvpgn
 		static int _handle_unban_command(t_connection * c, char const *text)
 		{
 			t_channel *  channel;
-			char const * chHostName = conn_get_chatname(c); //Channel-Host
 
 			std::vector<std::string> args = split_command(text, 1);
 
