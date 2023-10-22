@@ -518,9 +518,9 @@ initkill_timer = 120
 # WOLv2, WOL WILL FAIL IF YOU DO!
 
 #wolv1addrs = ":4000"
-#wolv2addrs = ":4005"
-#wgameresaddrs = ":4807"
-#apiregaddrs = ":5400"
+wolv2addrs = ":4005"
+wgameresaddrs = ":4807"
+apiregaddrs = ":5400"
 
 # Just leave these as default (unless you know the timezone, longitiude and latitude
 # of your server
