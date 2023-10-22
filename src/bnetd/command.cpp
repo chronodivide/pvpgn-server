@@ -2557,11 +2557,23 @@ namespace pvpgn
 			return 0;
 		}
 
+		//Helper-Methods used to allow channel-hosts use /ban /unban (_handle_ban_command, _handle_unban_command)
+		//FIXME: Should be in another place.
+		std::string extractUsername(const std::string& fullString) {
+    		return fullString.substr(0, fullString.length() - 7);
+		}
+
+		bool isUserChannelHost(const std::string& channelName, const std::string& username) {
+    		std::string chUserName = extractUsername(channelName);
+    		return chUserName == username;
+		}
+
 		static int _handle_ban_command(t_connection * c, char const *text)
 		{
 			char const * username;
 			t_channel *    channel;
 			t_connection * buc;
+			char const * chHostName = conn_get_chatname(c); //Channel-Host
 
 			std::vector<std::string> args = split_command(text, 2);
 
@@ -2578,10 +2590,12 @@ namespace pvpgn
 				message_send_text(c, message_type_error, c, localize(c, "This command can only be used inside a channel."));
 				return -1;
 			}
+
 			if (account_get_auth_admin(conn_get_account(c), NULL) != 1 && /* default to false */
 				account_get_auth_admin(conn_get_account(c), channel_get_name(channel)) != 1 && /* default to false */
 				account_get_auth_operator(conn_get_account(c), NULL) != 1 && /* default to false */
-				account_get_auth_operator(conn_get_account(c), channel_get_name(channel)) != 1) /* default to false */
+				account_get_auth_operator(conn_get_account(c), channel_get_name(channel)) && /* default to false */
+				!isUserChannelHost(channel_get_name(channel), chHostName)) //Check if user is Channel-Host
 			{
 				message_send_text(c, message_type_error, c, localize(c, "You have to be at least a Channel Operator to use this command."));
 				return -1;
@@ -2633,6 +2647,7 @@ namespace pvpgn
 		static int _handle_unban_command(t_connection * c, char const *text)
 		{
 			t_channel *  channel;
+			char const * chHostName = conn_get_chatname(c); //Channel-Host
 
 			std::vector<std::string> args = split_command(text, 1);
 
@@ -2651,7 +2666,8 @@ namespace pvpgn
 			if (account_get_auth_admin(conn_get_account(c), NULL) != 1 && /* default to false */
 				account_get_auth_admin(conn_get_account(c), channel_get_name(channel)) != 1 && /* default to false */
 				account_get_auth_operator(conn_get_account(c), NULL) != 1 && /* default to false */
-				account_get_auth_operator(conn_get_account(c), channel_get_name(channel)) != 1) /* default to false */
+				account_get_auth_operator(conn_get_account(c), channel_get_name(channel)) != 1 && /* default to false */
+				!isUserChannelHost(channel_get_name(channel), chHostName)) //Check if user is Channel-Host
 			{
 				message_send_text(c, message_type_error, c, localize(c, "You are not a channel operator."));
 				return -1;
