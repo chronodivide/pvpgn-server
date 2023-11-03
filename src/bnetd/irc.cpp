@@ -1361,6 +1361,15 @@ namespace pvpgn
 
 		extern int _handle_join_command(t_connection * conn, int numparams, char ** params, char * text)
 		{
+			if (!conn) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL conn");
+			}
+			if (!numparams) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL numparams");
+			}
+			if (!text) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL text");
+			}
 			if (numparams >= 1) {
 				char ** e;
 

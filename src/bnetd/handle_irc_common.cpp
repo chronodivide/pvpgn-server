@@ -72,6 +72,15 @@ namespace pvpgn
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL connection");
 				return -1;
 			}
+			if (!command) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL command");
+			}
+			if (!params) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL params");
+			}
+			if (!text) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL text");
+			}
 
 			switch (conn_get_class(conn)) {
 			case conn_class_irc:
@@ -147,16 +156,16 @@ namespace pvpgn
 		static int handle_irc_common_line(t_connection * conn, char const * ircline)
 		{
 			/* [:prefix] <command> [[param1] [param2] ... [paramN]] [:<text>] */
-			char * line; /* copy of ircline */
-			char * prefix = NULL; /* optional; mostly NULL */
-			char * command; /* mandatory */
-			char ** params = NULL; /* optional (array of params) */
-			char * text = NULL; /* optional */
-			char * bnet_command = NULL;  /* amadeo: used for battle.net.commands */
+			char * line = nullptr; /* copy of ircline */
+			char * prefix = nullptr; /* optional; mostly NULL */
+			char * command = nullptr; /* mandatory */
+			char ** params = nullptr; /* optional (array of params) */
+			char * text = nullptr; /* optional */
+			char * bnet_command = nullptr;  /* amadeo: used for battle.net.commands */
 			int unrecognized_before = 0;
 			int linelen; /* amadeo: counter for stringlenghts */
 			int numparams = 0;
-			char * tempparams;
+			char * tempparams = nullptr;
 			int i;
 
 			if (!conn) {
@@ -301,8 +310,11 @@ namespace pvpgn
 		{
 			unsigned int i;
 			char ircline[MAX_IRC_MESSAGE_LEN];
-			char const * data;
+			char const * data = nullptr;
 
+			if (!conn) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL conn");
+			}
 			if (!packet) {
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL packet");
 				return -1;

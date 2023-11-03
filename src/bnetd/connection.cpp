@@ -1869,8 +1869,8 @@ namespace pvpgn
 		extern int conn_check_ignoring(t_connection const * c, char const * me)
 		{
 			unsigned int i;
-			t_account *  temp;
-
+			t_account *  temp = nullptr;
+			
 			if (!c)
 			{
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL connection");
@@ -1903,8 +1903,10 @@ namespace pvpgn
 
 		extern int conn_set_channel_var(t_connection * c, t_channel * channel)
 		{
-			if (!c)
-			{
+		if (!channel) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL channel");
+			}
+			if (!c) {
 				eventlog(eventlog_level_error, __FUNCTION__, "got NULL connection");
 				return -1;
 			}
@@ -1915,13 +1917,13 @@ namespace pvpgn
 
 		extern int conn_set_channel(t_connection * c, char const * channelname)
 		{
-			t_channel * channel;
-			t_channel * oldchannel;
-			t_account * acc;
-			t_elem * curr;
+			t_channel * channel = nullptr;
+			t_channel * oldchannel = nullptr;
+			t_account * acc = nullptr;
+			t_elem * curr = nullptr;
 			int clantag = 0;
-			t_clan * clan = NULL;
-			t_clanmember * member = NULL;
+			t_clan * clan = nullptr;
+			t_clanmember * member = nullptr;
 			unsigned int created;
 
 			if (!c)

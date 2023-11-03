@@ -429,8 +429,8 @@ namespace pvpgn
 
 		extern int channel_add_connection(t_channel * channel, t_connection * connection)
 		{
-			t_channelmember * member;
-			t_connection *    user;
+			t_channelmember * member = nullptr;
+			t_connection *    user = nullptr;
 
 			if (!channel)
 			{

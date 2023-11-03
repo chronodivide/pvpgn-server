@@ -490,8 +490,8 @@ namespace pvpgn
 		extern t_account * accountlist_find_account(char const * username)
 		{
 			unsigned int userid = 0;
-			t_entry *    curr;
-			t_account *  account;
+			t_entry *    curr = nullptr;
+			t_account *  account = nullptr;
 
 			if (!username)
 			{
