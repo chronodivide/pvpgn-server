@@ -193,7 +193,20 @@ namespace pvpgn
 
 		extern int handle_wol_log_command(t_connection * conn, char const * command, int numparams, char ** params, char * text)
 		{
-			t_wol_command_table_row const *p;
+			t_wol_command_table_row const *p = nullptr;
+			
+			if (!conn) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL conn");
+			}
+			if (!command) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL command");
+			}
+			if (!params) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL params");
+			}
+			if (!text) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL text");
+			}			
 
 			for (p = wol_log_command_table; p->wol_command_string != NULL; p++) {
 				if (strcasecmp(command, p->wol_command_string) == 0) {

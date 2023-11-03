@@ -491,11 +491,15 @@ namespace pvpgn
 		static int sd_tcpinput(t_connection * c)
 		{
 			unsigned int currsize;
-			t_packet *   packet;
+			t_packet *   packet = nullptr;
 			int		 csocket = conn_get_socket(c);
 			bool	 skip;
 
 			currsize = conn_get_in_size(c);
+
+			if (!c)	{
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL c");
+			}
 
 			if (!conn_get_in_queue(c))
 			{
@@ -911,6 +915,10 @@ namespace pvpgn
 
 		static int handle_tcp(void *data, t_fdwatch_type rw)
 		{
+			if (!data) {
+				eventlog(eventlog_level_error, __FUNCTION__, "got NULL data");
+			}
+			
 			switch (rw) {
 			case fdwatch_type_read: return sd_tcpinput((t_connection *)data);
 			case fdwatch_type_write: return sd_tcpoutput((t_connection *)data);
