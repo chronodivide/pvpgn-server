@@ -1167,6 +1167,11 @@ namespace pvpgn
 						game_set_channel(game, channel);
 						conn_set_channel_var(conn, channel);
 						channel_add_connection(channel, conn);
+						
+						// Give tmpOP to the game host
+						conn_set_tmpOP_channel(conn, (char *)channel_get_name(channel));
+						channel_update_userflags(conn);
+
 						channel_set_userflags(conn);
 
 						game_set_maxplayers(game, std::atoi(params[2]));

@@ -459,16 +459,16 @@ namespace pvpgn
 
 			message_send_text(connection, message_type_channel, connection, channel_get_name(channel));
 
-			if ((!(channel->flags & channel_flags_permanent))
-				&& (!(channel->flags & channel_flags_thevoid))
-				&& (!(channel->flags & channel_flags_clan))
-				&& (channel->currmembers == 1)
-				&& (account_is_operator_or_admin(conn_get_account(connection), channel_get_name(channel)) == 0))
-			{
-				message_send_text(connection, message_type_info, connection, localize(connection, "you are now tempOP for this channel"));
-				conn_set_tmpOP_channel(connection, (char *)channel_get_name(channel));
-				channel_update_userflags(connection);
-			}
+			// if ((!(channel->flags & channel_flags_permanent))
+			// 	&& (!(channel->flags & channel_flags_thevoid))
+			// 	&& (!(channel->flags & channel_flags_clan))
+			// 	&& (channel->currmembers == 1)
+			// 	&& (account_is_operator_or_admin(conn_get_account(connection), channel_get_name(channel)) == 0))
+			// {
+			// 	message_send_text(connection, message_type_info, connection, localize(connection, "you are now tempOP for this channel"));
+			// 	conn_set_tmpOP_channel(connection, (char *)channel_get_name(channel));
+			// 	channel_update_userflags(connection);
+			// }
 			if (!(channel_get_flags(channel) & channel_flags_thevoid))
 			for (user = channel_get_first(channel); user; user = channel_get_next())
 			{
