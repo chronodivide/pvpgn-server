@@ -53,7 +53,7 @@
 #include "team.h"
 #include "common/setup_after.h"
 
-#define MaxRankKeptInLadder 1000
+#define MaxRankKeptInLadder 10000
 
 namespace pvpgn
 {
