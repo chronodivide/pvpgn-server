@@ -412,7 +412,7 @@ namespace pvpgn
 						/* Anongames WOL support */
 						anongame_wol_privmsg(conn, numparams, params, text);
 					}
-					else if (conn_get_state(conn) == conn_state_loggedin) {
+					else if (conn_get_state(conn) == conn_state_loggedin && !conn_quota_exceeded(conn, text)) {
 						if (e[i][0] == '#') {
 							/* channel message */
 							t_channel * channel;

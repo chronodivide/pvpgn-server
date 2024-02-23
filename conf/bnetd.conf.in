@@ -366,6 +366,9 @@ chanlog = false
 # Do you want to use the channel quota feature?
 quota = yes
 
+# Require a minimum number of played games before the account can send messages in public channels
+quota_min_games = 10
+
 # The following options deal with flood prevention.
 #
 # How many lines do you accept in quota_time seconds?

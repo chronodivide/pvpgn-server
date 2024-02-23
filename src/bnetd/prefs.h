@@ -98,6 +98,7 @@ namespace pvpgn
 		extern char const * prefs_get_chanlogdir(void);
 		extern char const * prefs_get_userlogdir(void);
 		extern unsigned int prefs_get_quota(void);
+		extern unsigned int prefs_get_quota_min_games(void);
 		extern unsigned int prefs_get_quota_lines(void);
 		extern unsigned int prefs_get_quota_time(void);
 		extern unsigned int prefs_get_quota_wrapline(void);

@@ -103,6 +103,7 @@ namespace pvpgn
 			char const * chanlogdir;
 			char const * userlogdir;
 			unsigned int quota;
+			unsigned int quota_min_games;
 			unsigned int quota_lines;
 			unsigned int quota_time;
 			unsigned int quota_wrapline;
@@ -436,6 +437,10 @@ namespace pvpgn
 		static int conf_set_quota(const char *valstr);
 		static const char *conf_get_quota(void);
 		static int conf_setdef_quota(void);
+
+		static int conf_set_quota_min_games(const char *valstr);
+		static const char *conf_get_quota_min_games(void);
+		static int conf_setdef_quota_min_games(void);
 
 		static int conf_set_quota_lines(const char *valstr);
 		static const char *conf_get_quota_lines(void);
@@ -816,6 +821,7 @@ namespace pvpgn
 			{ "chanlogdir", conf_set_chanlogdir, conf_get_chanlogdir, conf_setdef_chanlogdir },
 			{ "userlogdir", conf_set_userlogdir, conf_get_userlogdir, conf_setdef_userlogdir },
 			{ "quota", conf_set_quota, conf_get_quota, conf_setdef_quota },
+			{ "quota_min_games", conf_set_quota_min_games, conf_get_quota_min_games, conf_setdef_quota_min_games },
 			{ "quota_lines", conf_set_quota_lines, conf_get_quota_lines, conf_setdef_quota_lines },
 			{ "quota_time", conf_set_quota_time, conf_get_quota_time, conf_setdef_quota_time },
 			{ "quota_wrapline", conf_set_quota_wrapline, conf_get_quota_wrapline, conf_setdef_quota_wrapline },
@@ -2233,6 +2239,27 @@ namespace pvpgn
 		static const char* conf_get_quota(void)
 		{
 			return conf_get_bool(prefs_runtime_config.quota);
+		}
+
+
+		extern unsigned int prefs_get_quota_min_games(void)
+		{
+			return prefs_runtime_config.quota_min_games;
+		}
+
+		static int conf_set_quota_min_games(const char *valstr)
+		{
+			return conf_set_int(&prefs_runtime_config.quota_min_games, valstr, 0);
+		}
+
+		static int conf_setdef_quota_min_games(void)
+		{
+			return conf_set_int(&prefs_runtime_config.quota_min_games, NULL, 0);
+		}
+
+		static const char* conf_get_quota_min_games(void)
+		{
+			return conf_get_int(prefs_runtime_config.quota_min_games);
 		}
 
 
