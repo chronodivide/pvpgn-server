@@ -3209,20 +3209,32 @@ namespace pvpgn
 
 			if (text[0] != '/') {
 				uint min_games = prefs_get_quota_min_games();
-				if (min_games > 0) {
+				uint min_acc_age = prefs_get_quota_min_acc_age();
+				if (min_games > 0 || min_acc_age > 0) {
 					t_game * game = conn_get_game(con);
 					if (!(game && game_get_flag(game) == game_flag_private)) {
 						t_account * acc = conn_get_account(con);
-						t_clienttag ctag = conn_get_clienttag(con);
-						t_ladder_id ladder_id = ladder_id_solo;
-						uint ladder_games_count =
-							account_get_ladder_wins(acc, ctag, ladder_id) + account_get_ladder_losses(acc, ctag, ladder_id);
-						uint unranked_games_count =
-							account_get_normal_wins(acc, ctag) + account_get_normal_losses(acc, ctag);
 
-						if (ladder_games_count + unranked_games_count < min_games) {
-							message_send_text(con, message_type_error, con, localize(con, "Sending messages in public chat channels is restricted to accounts with a minimum of {} played games", min_games));
-							return 1;
+						if (min_games > 0) {
+							t_clienttag ctag = conn_get_clienttag(con);
+							t_ladder_id ladder_id = ladder_id_solo;
+							uint ladder_games_count =
+								account_get_ladder_wins(acc, ctag, ladder_id) + account_get_ladder_losses(acc, ctag, ladder_id);
+							uint unranked_games_count =
+								account_get_normal_wins(acc, ctag) + account_get_normal_losses(acc, ctag);
+
+							if (ladder_games_count + unranked_games_count < min_games) {
+								message_send_text(con, message_type_error, con, localize(con, "Sending messages in public chat channels is restricted to accounts with a minimum of {} played games.", min_games));
+								return 1;
+							}
+						}
+
+						if (min_acc_age > 0) {
+							uint age = account_get_ll_ctime(acc);
+							if (now - age < min_acc_age * 3600) {
+								message_send_text(con, message_type_error, con, localize(con, "Sending messages in public chat channels is restricted to accounts older than {} hours.", min_acc_age));
+								return 1;
+							}
 						}
 					}
 				}

@@ -369,6 +369,9 @@ quota = yes
 # Require a minimum number of played games before the account can send messages in public channels
 quota_min_games = 10
 
+# Require the account to be older than this number of hours before being able to send messages in public channels
+quota_min_acc_age = 72
+
 # The following options deal with flood prevention.
 #
 # How many lines do you accept in quota_time seconds?
