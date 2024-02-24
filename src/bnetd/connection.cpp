@@ -3240,6 +3240,18 @@ namespace pvpgn
 			if (min_games > 0 || min_acc_age > 0) {
 				t_account * acc = conn_get_account(c);
 
+				t_channel * channel = conn_get_channel(c);
+				if (channel) {
+					const char * ircname = channel_get_name(channel);
+					bool is_operator = (channel_conn_is_tmpOP(channel, c) == 1) ||
+						(account_get_auth_admin(acc, NULL) == 1) || (account_get_auth_admin(acc, ircname) == 1) ||
+						(account_get_auth_operator(acc, NULL) == 1) || (account_get_auth_operator(acc, ircname) == 1);
+
+					if (is_operator) {
+						return 0;
+					}
+				}
+
 				if (min_games > 0) {
 					t_clienttag ctag = conn_get_clienttag(c);
 					t_ladder_id ladder_id = ladder_id_solo;
