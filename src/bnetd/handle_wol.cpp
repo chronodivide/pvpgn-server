@@ -529,7 +529,7 @@ namespace pvpgn
 			 *  #game_channel_name currentusers maxplayers gameType gameIsTournment gameExtension longIP LOCK::topic
 			 * 
 			 *  XWOL:
-			 *  #game_channel_name currentusers maxplayers gameType gameIsTournment gameExtension hostPing LOCK::topic
+			 *  #game_channel_name currentusers maxplayers gameType gameIsTournment gameExtension hostPing LOCK::topic ownerMuted
 			 */
 
 			std::strcat(temp, gamename);
@@ -550,11 +550,13 @@ namespace pvpgn
 			std::snprintf(temp_a, sizeof(temp_a), "%s ", channel_wol_get_game_extension(gamechannel));  /* game extension */
 			std::strcat(temp, temp_a);
 
+			t_connection * owner_con = game_get_owner(game);
+
 			if (game_get_clienttag(game) == CLIENTTAG_CDRAL2_UINT) {
-				std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_latency(game_get_owner(game)));
+				std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_latency(owner_con));
 			}
 			else {
-				std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_addr(game_get_owner(game))); /* owner IP - FIXME: address translation here!! */
+				std::snprintf(temp_a, sizeof(temp_a), "%u ", conn_get_addr(owner_con)); /* owner IP - FIXME: address translation here!! */
 			}
 			std::strcat(temp, temp_a);
 
@@ -568,6 +570,14 @@ namespace pvpgn
 			if (topicstr.c_str()) {
 				std::snprintf(temp_a, sizeof(temp_a), "%s", topicstr.c_str());  /* topic */
 				std::strcat(temp, temp_a);
+			}
+
+			if (game_get_clienttag(game) == CLIENTTAG_CDRAL2_UINT) {
+				std::strcat(temp, " ");
+
+				int owner_muted = conn_get_muted(owner_con) || account_get_auth_mute(conn_get_account(owner_con));
+
+				std::strcat(temp, owner_muted ? "1" : "0");
 			}
 
 			data->counter++;

@@ -380,6 +380,7 @@ namespace pvpgn
 		extern void conn_set_country(t_connection * c, char const * country);
 		extern char const * conn_get_country(t_connection const * c);
 		extern int conn_quota_exceeded(t_connection * c, char const * message);
+		extern int conn_get_muted(t_connection * c);
 		extern int conn_set_lastsender(t_connection * c, char const * sender);
 		extern char const * conn_get_lastsender(t_connection const * c);
 		extern t_versioncheck * conn_get_versioncheck(t_connection * c);
