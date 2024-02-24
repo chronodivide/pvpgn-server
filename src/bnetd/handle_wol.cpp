@@ -575,7 +575,7 @@ namespace pvpgn
 			if (game_get_clienttag(game) == CLIENTTAG_CDRAL2_UINT) {
 				std::strcat(temp, " ");
 
-				int owner_muted = conn_get_muted(owner_con) || account_get_auth_mute(conn_get_account(owner_con));
+				int owner_muted = conn_get_muted(owner_con) || account_get_auth_mute(conn_get_account(owner_con)) == 1;
 
 				std::strcat(temp, owner_muted ? "1" : "0");
 			}

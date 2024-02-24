@@ -3243,7 +3243,7 @@ namespace pvpgn
 				t_channel * channel = conn_get_channel(c);
 				if (channel) {
 					const char * ircname = channel_get_name(channel);
-					bool is_operator = (channel_conn_is_tmpOP(channel, c) == 1) ||
+					bool is_operator =
 						(account_get_auth_admin(acc, NULL) == 1) || (account_get_auth_admin(acc, ircname) == 1) ||
 						(account_get_auth_operator(acc, NULL) == 1) || (account_get_auth_operator(acc, ircname) == 1);
 
